@@ -1,22 +1,22 @@
 #include "iotsa.h"
 #include "iotsaRGBWSensor.h"
 #include "iotsaConfigFile.h"
+#include "Wire.h"
+#include "veml6040.h"
 
+VEML6040 sensor;
 #ifdef IOTSA_WITH_WEB
 void
 IotsaRGBWSensorMod::handler() {
-  bool anyChanged = false;
-  if( server->hasArg("argument")) {
-    if (needsAuthentication()) return;
-    argument = server->arg("argument");
-    anyChanged = true;
+  String message = "<html><head><title>RGBW sensor module</title></head><body><h1>RGBW sensor module</h1>";
+  _measure();
+  if (error) {
+    message += "<p><em>Error: VEML6040 sensor not detected</em></p>";
   }
-  if (anyChanged) configSave();
-
-  String message = "<html><head><title>Boilerplate module</title></head><body><h1>Boilerplate module</h1>";
-  message += "<form method='get'>Argument: <input name='argument' value='";
-  message += htmlEncode(argument);
-  message += "'><br><input type='submit'></form>";
+  message += "<p>RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
+  message += "White intensity: W=" + String(w) + "<br>";
+  message += "Color temperature: CCT=" + String(cct) + "<br>";
+  message += "Ambient light level: " + String(lux) + "lux</p>";
   server->send(200, "text/html", message);
 }
 
@@ -27,24 +27,29 @@ String IotsaRGBWSensorMod::info() {
 #endif // IOTSA_WITH_WEB
 
 void IotsaRGBWSensorMod::setup() {
-  configLoad();
+  Wire.begin();
+  if(sensor.begin()) {
+    sensor.setConfiguration(VEML6040_IT_320MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE);
+    error = false;
+  } else {
+    error = true;
+  }
 }
 
 #ifdef IOTSA_WITH_API
 bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
-  reply["argument"] = argument;
-  return true;
-}
-
-bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request, JsonObject& reply) {
-  bool anyChanged = false;
-  JsonObject reqObj = request.as<JsonObject>();
-  if (reqObj.containsKey("argument")) {
-    argument = reqObj["argument"].as<String>();
-    anyChanged = true;
+  _measure();
+  if (error) {
+    reply["error"] = "no sensor";
+    return true;
   }
-  if (anyChanged) configSave();
-  return anyChanged;
+  reply["r"] = r;
+  reply["g"] = g;
+  reply["b"] = b;
+  reply["w"] = w;
+  reply["cct"] = cct;
+  reply["lux"] = lux;
+  return true;
 }
 #endif // IOTSA_WITH_API
 
@@ -53,20 +58,20 @@ void IotsaRGBWSensorMod::serverSetup() {
   server->on("/rgbw", std::bind(&IotsaRGBWSensorMod::handler, this));
 #endif
 #ifdef IOTSA_WITH_API
-  api.setup("/api/rgbw", true, true);
+  api.setup("/api/rgbw", true, false);
   name = "rgbw";
 #endif
 }
 
-void IotsaRGBWSensorMod::configLoad() {
-  IotsaConfigFileLoad cf("/config/rgbw.cfg");
-  cf.get("argument", argument, "");
- 
-}
-
-void IotsaRGBWSensorMod::configSave() {
-  IotsaConfigFileSave cf("/config/rgbw.cfg");
-  cf.put("argument", argument);
+void IotsaRGBWSensorMod::_measure() {
+  if (error) return;
+  r = sensor.getRed();
+  g = sensor.getGreen();
+  b = sensor.getBlue();
+  w = sensor.getWhite();
+  cct = sensor.getCCT();
+  lux = sensor.getAmbientLight();
+  IFDEBUG IotsaSerial.printf("r=%d g=%d b=%d w=%d cct=%d lux=%f\n", r, g, b, w, cct, lux);
 }
 
 void IotsaRGBWSensorMod::loop() {

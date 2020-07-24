@@ -18,11 +18,15 @@ public:
   String info();
 protected:
   bool getHandler(const char *path, JsonObject& reply);
-  bool putHandler(const char *path, const JsonVariant& request, JsonObject& reply);
-  void configLoad();
-  void configSave();
   void handler();
-  String argument;
+  void _measure();
+  bool error;
+  uint16_t r;
+  uint16_t g;
+  uint16_t b;
+  uint16_t w;
+  uint16_t cct;
+  float lux;
 };
 
 #endif
