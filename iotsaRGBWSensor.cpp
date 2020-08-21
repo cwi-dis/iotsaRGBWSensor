@@ -16,7 +16,8 @@ IotsaRGBWSensorMod::handler() {
   message += "<p>RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
   message += "White intensity: W=" + String(w) + "<br>";
   message += "Color temperature: CCT=" + String(cct) + "<br>";
-  message += "Ambient light level: " + String(lux) + "lux</p>";
+  message += "Ambient light level: " + String(lux) + "lux<br>";
+  message += "(Integration interval: "+ String(integrationInterval) + "ms)";
   server->send(200, "text/html", message);
 }
 
@@ -29,11 +30,41 @@ String IotsaRGBWSensorMod::info() {
 void IotsaRGBWSensorMod::setup() {
   Wire.begin();
   if(sensor.begin()) {
-    sensor.setConfiguration(VEML6040_IT_320MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE);
+    integrationInterval = 320;
+    _setInterval();
     error = false;
   } else {
     error = true;
   }
+}
+
+void IotsaRGBWSensorMod::_setInterval() {
+  uint8_t conf;
+  if (integrationInterval <= 40) {
+    integrationInterval = 40;
+    conf = VEML6040_IT_40MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
+  } else
+  if (integrationInterval <= 80) {
+    integrationInterval = 80;
+    conf = VEML6040_IT_80MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
+  } else
+  if (integrationInterval <= 160) {
+    integrationInterval = 160;
+    conf = VEML6040_IT_160MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
+  } else
+  if (integrationInterval <= 320) {
+    integrationInterval = 320;
+    conf = VEML6040_IT_320MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
+  } else
+  if (integrationInterval <= 640) {
+    integrationInterval = 640;
+    conf = VEML6040_IT_640MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
+  } else {
+    integrationInterval = 1280;
+    conf = VEML6040_IT_1280MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
+  }
+  sensor.setConfiguration(conf);
+  nextReadingAvailable = millis() + integrationInterval;
 }
 
 #ifdef IOTSA_WITH_API
@@ -49,7 +80,19 @@ bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
   reply["w"] = w;
   reply["cct"] = cct;
   reply["lux"] = lux;
+  reply["integrationInterval"] = integrationInterval;
   return true;
+}
+
+bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request, JsonObject& reply) {
+  bool anyChanged = false;
+  JsonObject reqObj = request.as<JsonObject>();
+  if (reqObj.containsKey("integrationInterval")) {
+    integrationInterval = reqObj["integrationInterval"];
+    anyChanged = true;
+    _setInterval();
+  }
+  return anyChanged;
 }
 #endif // IOTSA_WITH_API
 
@@ -58,20 +101,23 @@ void IotsaRGBWSensorMod::serverSetup() {
   server->on("/rgbw", std::bind(&IotsaRGBWSensorMod::handler, this));
 #endif
 #ifdef IOTSA_WITH_API
-  api.setup("/api/rgbw", true, false);
+  api.setup("/api/rgbw", true, true);
   name = "rgbw";
 #endif
 }
 
 void IotsaRGBWSensorMod::_measure() {
   if (error) return;
-  r = sensor.getRed();
-  g = sensor.getGreen();
-  b = sensor.getBlue();
-  w = sensor.getWhite();
-  cct = sensor.getCCT();
+  uint32_t now = millis();
+  if (now < nextReadingAvailable) delay(nextReadingAvailable-now);
+  r = (float)sensor.getRed()/65535.0;
+  g = (float)sensor.getGreen()/65535.0;
+  b = (float)sensor.getBlue()/65535.0;
+  w = (float)sensor.getWhite()/65535.0;
+  cct = (float)sensor.getCCT();
   lux = sensor.getAmbientLight();
-  IFDEBUG IotsaSerial.printf("r=%d g=%d b=%d w=%d cct=%d lux=%f\n", r, g, b, w, cct, lux);
+  nextReadingAvailable = millis() + integrationInterval;
+  IFDEBUG IotsaSerial.printf("r=%f g=%f b=%f w=%f cct=%f lux=%f\n", r, g, b, w, cct, lux);
 }
 
 void IotsaRGBWSensorMod::loop() {
