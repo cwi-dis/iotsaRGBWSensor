@@ -14,6 +14,13 @@ IotsaRGBWSensorMod::handler() {
     message += "<p><em>Error: VEML6040 sensor not detected</em></p>";
   }
   message += "<p>RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
+  uint32_t hexColor = ((int)(r*255) << 16) | ((int)(g*255) << 8) | ((int)(b*255));
+  message += "Color: <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg>";
+  float maxRGB = max(r, max(g, b));
+  if (maxRGB == 0) maxRGB = 1;
+  hexColor = ((int)(r/maxRGB*255) << 16) | ((int)(g/maxRGB*255) << 8) | ((int)(b/maxRGB*255));
+  message += "Hue: <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg><br>";
+
   message += "White intensity: W=" + String(w) + "<br>";
   message += "Color temperature: CCT=" + String(cct) + "<br>";
   message += "Ambient light level: " + String(lux) + "lux<br>";
