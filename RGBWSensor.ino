@@ -34,6 +34,13 @@ IotsaOtaMod otaMod(application, authProvider);
 #define PIN_DISABLE_SLEEP 0 // Define for pin on which low signal disables sleep
 #include "iotsaBattery.h"
 IotsaBatteryMod batteryMod(application, authProvider);
+// Pressing the disable-sleep button will also wake from sleep or hibernation
+#include "iotsaInput.h"
+Button buttonWake(PIN_DISABLE_SLEEP, true, true, true);
+Input *inputs[] = {
+  &buttonWake
+};
+IotsaInputMod inputMod(application, inputs, 1);
 #endif
 
 #include "iotsaRGBWSensor.h"
