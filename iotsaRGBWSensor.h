@@ -12,13 +12,14 @@
 class IotsaRGBWSensorMod : public IotsaRGBWSensorModBaseMod {
 public:
   using IotsaRGBWSensorModBaseMod::IotsaRGBWSensorModBaseMod;
-  void setup();
-  void serverSetup();
-  void loop();
-  String info();
+  void setup() override;
+  void serverSetup() override;
+  void loop() override;
+  String info() override;
 protected:
-  bool getHandler(const char *path, JsonObject& reply);
-  bool putHandler(const char *path, const JsonVariant& request, JsonObject& reply);  void handler();
+  bool getHandler(const char *path, JsonObject& reply) override;
+  bool putHandler(const char *path, const JsonVariant& request, JsonObject& reply) override;
+  void handler();
   void _measure();
   void _setInterval();
   bool error;
