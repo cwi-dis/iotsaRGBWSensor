@@ -35,13 +35,15 @@ String IotsaRGBWSensorMod::info() {
 #endif // IOTSA_WITH_WEB
 
 void IotsaRGBWSensorMod::setup() {
-  Wire.begin();
+  Wire.begin(IOTSA_VEML_SDA, IOTSA_VEML_SCL);
   if(sensor.begin()) {
     integrationInterval = 320;
     _setInterval();
     error = false;
+    IFDEBUG IotsaSerial.println("VEML6040 sensor attached");
   } else {
     error = true;
+    IFDEBUG IotsaSerial.println("VEML6040 sensor not found");
   }
 }
 
