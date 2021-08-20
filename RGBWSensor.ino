@@ -36,7 +36,7 @@ IotsaOtaMod otaMod(application, authProvider);
 IotsaBatteryMod batteryMod(application, authProvider);
 // Pressing the disable-sleep button will also wake from sleep or hibernation
 #include "iotsaInput.h"
-Button buttonWake(PIN_DISABLE_SLEEP, true, true, true);
+Button buttonWake(PIN_DISABLE_SLEEP, true, false, true);
 Input *inputs[] = {
   &buttonWake
 };
@@ -46,12 +46,45 @@ IotsaInputMod inputMod(application, inputs, 1);
 #include "iotsaRGBWSensor.h"
 IotsaRGBWSensorMod rgbwMod(application, authProvider);
 
+//
+// Keep track of button presses, so we can switch mode or reboot with quick presses.
+//
+bool button0Pressed() {
+  const int TAP_COUNT_MODE_CHANGE=3;
+  const int TAP_COUNT_REBOOT=6;
+  const uint32_t TAP_DURATION=1000;
+
+  IFDEBUG IotsaSerial.println("button0 pressed");
+  iotsaConfig.extendCurrentMode();
+  static uint32_t lastButtonTapMillis = 0;
+  static int buttonTapCount = 0;
+  uint32_t now = millis();
+  if (lastButtonTapMillis > 0 && now < lastButtonTapMillis + TAP_DURATION) {
+    // A button change that was quick enough for a tap
+    lastButtonTapMillis = now;
+    buttonTapCount++;
+    if (buttonTapCount == TAP_COUNT_MODE_CHANGE) {
+      IFDEBUG IotsaSerial.println("tap mode change");
+      iotsaConfig.allowRequestedConfigurationMode();
+    }
+    if (buttonTapCount == TAP_COUNT_REBOOT) {
+      IFDEBUG IotsaSerial.println("tap mode reboot");
+      iotsaConfig.requestReboot(1000);
+    }
+  } else {
+    // Either the first change, or too late. Reset.
+    lastButtonTapMillis = millis();
+    buttonTapCount = 0;
+  }
+}
+
 void setup(void){
   application.setup();
   application.serverSetup();
 #ifdef PIN_DISABLE_SLEEP
   batteryMod.setPinDisableSleep(PIN_DISABLE_SLEEP);
 #endif
+buttonWake.setCallback(button0Pressed);
 }
  
 void loop(void){
