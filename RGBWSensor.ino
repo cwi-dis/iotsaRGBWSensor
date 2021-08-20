@@ -76,6 +76,7 @@ bool button0Pressed() {
     lastButtonTapMillis = millis();
     buttonTapCount = 0;
   }
+  return true;
 }
 
 void setup(void){
