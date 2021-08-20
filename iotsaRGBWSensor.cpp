@@ -8,6 +8,7 @@ VEML6040 sensor;
 #ifdef IOTSA_WITH_WEB
 void
 IotsaRGBWSensorMod::handler() {
+  iotsaConfig.extendCurrentMode();
   String message = "<html><head><title>RGBW sensor module</title></head><body><h1>RGBW sensor module</h1>";
   _measure();
   if (error) {
@@ -29,6 +30,7 @@ IotsaRGBWSensorMod::handler() {
 }
 
 String IotsaRGBWSensorMod::info() {
+  iotsaConfig.extendCurrentMode();
   String message = "<p>Built with RGBW sensor module. See <a href=\"/rgbw\">/rgbw</a>, or <a href=\"/api/rgbw\">/api/rgbw</a> for REST API.</p>";
   return message;
 }
@@ -78,6 +80,7 @@ void IotsaRGBWSensorMod::_setInterval() {
 
 #ifdef IOTSA_WITH_API
 bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
+  iotsaConfig.extendCurrentMode();
   _measure();
   if (error) {
     reply["error"] = "no sensor";
@@ -94,6 +97,7 @@ bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
 }
 
 bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request, JsonObject& reply) {
+  iotsaConfig.extendCurrentMode();
   bool anyChanged = false;
   JsonObject reqObj = request.as<JsonObject>();
   if (reqObj.containsKey("integrationInterval")) {
