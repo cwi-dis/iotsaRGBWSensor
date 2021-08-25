@@ -28,6 +28,17 @@ IotsaRGBWSensorMod::handler() {
   message += "'><input type='submit' value='Configure'></form>";
   message += "<h2>Sensor Reading</h2>";
   message += "<form method='get'><input type='submit' value='Refresh'></form>";
+
+  if (r > 0.99 || g > 0.99 || b > 0.99) {
+    message += "<p><em>Note:</em> Color channel over-exposed, decrease interval for better color results.</p>";
+  } else
+  if (r < 0.33 && g < 0.33 && b < 0.33) {
+    message += "<p><em>Note:</em> Increasing interval may give better color results.</p>";
+  } else
+  if (w > 0.99) {
+    message += "<p><em>Note:</em> W channel over-exposed. May mean lots of IR light.</p>";
+  }
+
   message += "<p>RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
   uint32_t hexColor = ((int)(r*255) << 16) | ((int)(g*255) << 8) | ((int)(b*255));
   
