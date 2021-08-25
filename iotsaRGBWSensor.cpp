@@ -9,18 +9,33 @@ VEML6040 sensor;
 void
 IotsaRGBWSensorMod::handler() {
   iotsaConfig.extendCurrentMode();
+  bool anyChanged = false;
+  if( server->hasArg("integrationInterval")) {
+    if (needsAuthentication()) return;
+    String sInterval = server->arg("integrationInterval");
+    integrationInterval = sInterval.toInt();
+    anyChanged = true;
+  }  
+  if (anyChanged) configSave();
   String message = "<html><head><title>RGBW sensor module</title></head><body><h1>RGBW sensor module</h1>";
   _measure();
   if (error) {
     message += "<p><em>Error: VEML6040 sensor not detected</em></p>";
   }
+  message += "<h2>Sensor Configuration</h2>";
+  message += "<form method='get'>Integration interval (ms): <input name='integrationInterval' value='";
+  message += String(integrationInterval);
+  message += "'><input type='submit' value='Configure'></form>";
+  message += "<h2>Sensor Reading</h2>";
+  message += "<form method='get'><input type='submit' value='Refresh'></form>";
   message += "<p>RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
   uint32_t hexColor = ((int)(r*255) << 16) | ((int)(g*255) << 8) | ((int)(b*255));
-  message += "Color: <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg>";
+  
+  message += "Color 0x" + String(hexColor, 16)+ ": <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg>";
   float maxRGB = max(r, max(g, b));
   if (maxRGB == 0) maxRGB = 1;
   hexColor = ((int)(r/maxRGB*255) << 16) | ((int)(g/maxRGB*255) << 8) | ((int)(b/maxRGB*255));
-  message += "Hue: <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg><br>";
+  message += "Hue 0x" + String(hexColor, 16) + ": <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg><br>";
 
   message += "White intensity: W=" + String(w) + "<br>";
   message += "Color temperature: CCT=" + String(cct) + "<br>";
