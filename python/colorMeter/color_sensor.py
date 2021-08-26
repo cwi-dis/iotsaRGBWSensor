@@ -14,6 +14,7 @@ class ColorSensor:
         api = self.device.getApi('rgbw')
         api_data = api.getAll()
         # Update API data with measurement indication
+        print(f"RGB={api_data['r'],api_data['g'],api_data['b']}, White={api_data['w']}, Lux={api_data['lux']}, Temp={api_data['cct']}")
         self.data.append(api_data)
 
     def read_file(self, filename):
