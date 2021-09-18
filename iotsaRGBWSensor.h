@@ -23,6 +23,10 @@ protected:
   void _measure();
   void _setInterval();
   bool error;
+  int raw_r;
+  int raw_g;
+  int raw_b;
+  int raw_w;
   float r;
   float g;
   float b;

@@ -39,7 +39,8 @@ IotsaRGBWSensorMod::handler() {
     message += "<p><em>Note:</em> W channel over-exposed. May mean lots of IR light.</p>";
   }
 
-  message += "<p>RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
+  message += "<p>RGB counts: R=" + String(raw_r) + ", G=" + String(raw_g) + ", B=" + String(raw_b) + "<br>";
+  message += "RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
   uint32_t hexColor = ((int)(r*255) << 16) | ((int)(g*255) << 8) | ((int)(b*255));
   
   message += "Color 0x" + String(hexColor, 16)+ ": <svg width='40' height='40'><rect width='40' height='40' style='fill:#" + String(hexColor, HEX) + ";stroke-width:2;stroke:rgb(0,0,0)' /></svg>";
@@ -112,6 +113,10 @@ bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
     reply["error"] = "no sensor";
     return true;
   }
+  reply["raw_r"] = raw_r;
+  reply["raw_g"] = raw_g;
+  reply["raw_b"] = raw_b;
+  reply["raw_w"] = raw_w;
   reply["r"] = r;
   reply["g"] = g;
   reply["b"] = b;
@@ -149,14 +154,18 @@ void IotsaRGBWSensorMod::_measure() {
   if (error) return;
   uint32_t now = millis();
   if (now < nextReadingAvailable) delay(nextReadingAvailable-now);
-  r = (float)sensor.getRed()/65535.0;
-  g = (float)sensor.getGreen()/65535.0;
-  b = (float)sensor.getBlue()/65535.0;
-  w = (float)sensor.getWhite()/65535.0;
+  raw_r = sensor.getRed();
+  raw_g = sensor.getGreen();
+  raw_b = sensor.getBlue();
+  raw_w = sensor.getWhite();
+  r = (float)raw_r/65535.0;
+  g = (float)raw_g/65535.0;
+  b = (float)raw_b/65535.0;
+  w = (float)raw_w/65535.0;
   cct = (float)sensor.getCCT();
   lux = sensor.getAmbientLight();
   nextReadingAvailable = millis() + integrationInterval;
-  IFDEBUG IotsaSerial.printf("r=%f g=%f b=%f w=%f cct=%f lux=%f\n", r, g, b, w, cct, lux);
+  IFDEBUG IotsaSerial.printf("raw_r=%d raw_g=%d raw_b=%d raw_w=%d r=%f g=%f b=%f w=%f cct=%f lux=%f\n", raw_r, raw_g, raw_b, raw_w, r, g, b, w, cct, lux);
 }
 
 void IotsaRGBWSensorMod::loop() {
