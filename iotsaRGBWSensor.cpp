@@ -59,7 +59,7 @@ IotsaRGBWSensorMod::handler() {
     message += "<p><em>Note:</em> W channel over-exposed. May mean lots of IR light.</p>";
   }
 
-  message += "<p>RGB counts: R=" + String(raw_r) + ", G=" + String(raw_g) + ", B=" + String(raw_b) + "<br>";
+  message += "<p>RGBW counts: R=" + String(raw_r) + ", G=" + String(raw_g) + ", B=" + String(raw_b) + ", W=" + String(raw_w) + "<br>";
   message += "RGB intensities: R=" + String(r) + ", G=" + String(g) + ", B=" + String(b) + "<br>";
   uint32_t hexColor = ((int)(r*255) << 16) | ((int)(g*255) << 8) | ((int)(b*255));
   
@@ -178,10 +178,10 @@ void IotsaRGBWSensorMod::_measure() {
   raw_g = sensor.getGreen();
   raw_b = sensor.getBlue();
   raw_w = sensor.getWhite();
-  r = (float)raw_r/65535.0;
-  g = (float)raw_g/65535.0;
-  b = (float)raw_b/65535.0;
-  w = (float)raw_w/65535.0;
+  r = (float)raw_r/raw_w;
+  g = (float)raw_g/raw_w;
+  b = (float)raw_b/raw_w;
+  w = (float)raw_w/raw_w;
   cct = (float)sensor.getCCT();
   lux = sensor.getAmbientLight();
   nextReadingAvailable = millis() + integrationInterval;
