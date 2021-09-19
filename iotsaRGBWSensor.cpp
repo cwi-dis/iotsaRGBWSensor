@@ -5,6 +5,14 @@
 #include "veml6040.h"
 
 VEML6040 sensor;
+
+#ifndef IOTSA_VEML_SDA
+#define IOTSA_VEML_SDA 19
+#endif
+#ifndef IOTSA_VEML_SCL
+#define IOTSA_VEML_SCL 23
+#endif
+
 #ifdef IOTSA_WITH_WEB
 void
 IotsaRGBWSensorMod::handler() {
