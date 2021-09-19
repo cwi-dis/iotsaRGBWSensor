@@ -13,6 +13,18 @@ VEML6040 sensor;
 #define IOTSA_VEML_SCL 23
 #endif
 
+void IotsaRGBWSensorMod::configLoad() {
+  IotsaConfigFileLoad cf("/config/rgbwsensor.cfg");
+  cf.get("integrationInterval", integrationInterval, 320);
+  _setInterval();
+}
+
+void IotsaRGBWSensorMod::configSave() {
+  IotsaConfigFileSave cf("/config/rgbwsensor.cfg");
+  cf.put("integrationInterval", integrationInterval);
+  _setInterval();
+}
+
 #ifdef IOTSA_WITH_WEB
 void
 IotsaRGBWSensorMod::handler() {
@@ -74,8 +86,7 @@ String IotsaRGBWSensorMod::info() {
 void IotsaRGBWSensorMod::setup() {
   Wire.begin(IOTSA_VEML_SDA, IOTSA_VEML_SCL);
   if(sensor.begin()) {
-    integrationInterval = 320;
-    _setInterval();
+    configLoad();
     error = false;
     IFDEBUG IotsaSerial.println("VEML6040 sensor attached");
   } else {
@@ -110,7 +121,8 @@ void IotsaRGBWSensorMod::_setInterval() {
     conf = VEML6040_IT_1280MS + VEML6040_AF_AUTO + VEML6040_SD_ENABLE;
   }
   sensor.setConfiguration(conf);
-  nextReadingAvailable = millis() + integrationInterval;
+  nextReadingAvailable = millis() + oldIntegrationInterval + integrationInterval + 1;
+  oldIntegrationInterval = integrationInterval;
 }
 
 #ifdef IOTSA_WITH_API
@@ -142,8 +154,8 @@ bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request
   if (reqObj.containsKey("integrationInterval")) {
     integrationInterval = reqObj["integrationInterval"];
     anyChanged = true;
-    _setInterval();
   }
+  if (anyChanged) configSave();
   return anyChanged;
 }
 #endif // IOTSA_WITH_API
