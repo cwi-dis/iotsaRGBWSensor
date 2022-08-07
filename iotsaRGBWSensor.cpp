@@ -181,7 +181,7 @@ void IotsaRGBWSensorMod::_measure() {
   r = (float)raw_r/raw_w;
   g = (float)raw_g/raw_w;
   b = (float)raw_b/raw_w;
-  w = (float)raw_w/raw_w;
+  w = (float)raw_w/65536.0;
   cct = (float)sensor.getCCT();
   lux = sensor.getAmbientLight();
   nextReadingAvailable = millis() + integrationInterval;
