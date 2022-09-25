@@ -1,5 +1,8 @@
 # iotsaRGBWSensor
 
+![build-platformio](https://github.com/cwi-dis/iotsaRGBWSensor/workflows/build-platformio/badge.svg)
+![build-arduino](https://github.com/cwi-dis/iotsaRGBWSensor/workflows/build-arduino/badge.svg)
+
 Light sensor that detects RGB, White and ambient light using a VEML6040 color sensor.
 
 Based on [iotsa](https://github.com/cwi-dis/iotsa).
