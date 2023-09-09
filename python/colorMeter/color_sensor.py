@@ -1,7 +1,10 @@
 import csv
 import iotsa
 import matplotlib.pyplot as pyplot
-import pandas
+import colour
+import colour.plotting
+import matplotlib.pyplot
+
 
 class ColorSensor:
     def __init__(self, verbose=False):
@@ -34,6 +37,19 @@ class ColorSensor:
             print(f'write_file: wrote {len(self.data)} records to {filename}')
 
     def graph(self):
+        fig, ax = colour.plotting.plot_planckian_locus_in_chromaticity_diagram_CIE1931([], standalone=False)
+        ax.set_title("CCT color")
+        cct_measured = self.data[0]['cct']
+        x, y = colour.CCT_to_xy(cct_measured)
+        matplotlib.pyplot.plot([x], [y], '*', label="Device-converted")
+        r = self.data[0]['r']
+        g = self.data[0]['g']
+        b = self.data[0]['b']
+        xyz = colour.RGB_to_XYZ([r, g, b], 'sRGB')
+        x, y = colour.XYZ_to_xy(xyz)
+        matplotlib.pyplot.plot([x], [y], '.', label="Python-converted")
+        ax.legend()
+        matplotlib.pyplot.show()
         return
         pd = pandas.DataFrame(self.data)
         pd.v = pandas.to_numeric(pd.v)

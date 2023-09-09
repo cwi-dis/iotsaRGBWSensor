@@ -1,0 +1,7 @@
+
+iotsa
+matplotlib
+pandas
+colour-science
+colour-science[plotting]
+colour-science[optional]

@@ -29,8 +29,6 @@ def main():
             sensor.read_file(args.output)
     if args.output:
         sensor.write_file(args.output)
-    if args.output:
-        sensor.write_file(args.output)
     if args.graph:
         sensor.graph()
 
