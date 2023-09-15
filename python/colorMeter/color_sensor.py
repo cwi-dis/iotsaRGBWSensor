@@ -37,17 +37,19 @@ class ColorSensor:
             print(f'write_file: wrote {len(self.data)} records to {filename}')
 
     def graph(self):
-        fig, ax = colour.plotting.plot_planckian_locus_in_chromaticity_diagram_CIE1931([], standalone=False)
-        ax.set_title("CCT color")
         cct_measured = self.data[0]['cct']
-        x, y = colour.CCT_to_xy(cct_measured)
-        matplotlib.pyplot.plot([x], [y], '*', label="Device-converted")
+        x_dev, y_dev = colour.CCT_to_xy(cct_measured)
+
         r = self.data[0]['r']
         g = self.data[0]['g']
         b = self.data[0]['b']
         xyz = colour.RGB_to_XYZ([r, g, b], 'sRGB')
-        x, y = colour.XYZ_to_xy(xyz)
-        matplotlib.pyplot.plot([x], [y], '.', label="Python-converted")
+        x_py, y_py = colour.XYZ_to_xy(xyz)
+
+        fig, ax = colour.plotting.plot_planckian_locus_in_chromaticity_diagram_CIE1931([], standalone=False)
+        ax.set_title("CCT color")
+        matplotlib.pyplot.plot([x_dev], [y_dev], '+', label="Device-converted", color="black")
+        matplotlib.pyplot.plot([x_py], [y_py], '*', label="Python-converted", color="black")
         ax.legend()
         matplotlib.pyplot.show()
         return
