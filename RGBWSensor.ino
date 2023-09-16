@@ -46,6 +46,10 @@ IotsaInputMod inputMod(application, inputs, 1);
 #include "iotsaRGBWSensor.h"
 IotsaRGBWSensorMod rgbwMod(application, authProvider);
 
+#include "iotsaBLEServer.h"
+#ifdef IOTSA_WITH_BLE
+IotsaBLEServerMod bleserverMod(application);
+#endif
 //
 // Keep track of button presses, so we can switch mode or reboot with quick presses.
 //
