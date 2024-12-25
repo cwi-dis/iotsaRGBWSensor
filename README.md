@@ -35,9 +35,18 @@ After the breadboard work I've transferred the components to a solderboard. It's
 
 ![solderboard bottom](extras/bottom.jpg)
 
-At some point I will design a 3d-printed case.
-
 See the note above about desoldering the bright white LED on the VEML.
+
+### 3d-printed case
+
+Here are pictures of a 3d-printed case for the board, plus a LiPo battery:
+
+![case top](extras/case_top.jpg)
+
+![case bottom](extras/case_bottom.jpg)
+
+The `extras` folder contains the `.stl` files to print the box and the lid, and it also has the `colorimeter.f3d` Autodesk Fusion file in case you want to make modifications.
+
 
 ## Software installation
 
