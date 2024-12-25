@@ -152,7 +152,6 @@ bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request
   bool anyChanged = false;
   JsonObject reqObj = request.as<JsonObject>();
   if (getFromRequest<int>(reqObj, "integrationInterval", integrationInterval)) {
-    integrationInterval = reqObj["integrationInterval"];
     anyChanged = true;
   }
   if (anyChanged) configSave();
