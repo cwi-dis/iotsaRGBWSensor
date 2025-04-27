@@ -1,24 +1,20 @@
-//
-// Boilerplate for configurable web server (probably RESTful) running on ESP8266.
-//
-// The server always includes the Wifi configuration module. You can enable
-// other modules with the preprocessor defines. With the default defines the server
-// will allow serving of web pages and other documents, and of uploading those.
-//
-
+# 1 "/var/folders/8p/xg7xpzbx2tnf5xfzzvl925lr0000gn/T/tmpxdhbtaa6"
+#include <Arduino.h>
+# 1 "/Users/jack/src/dis-git/iotsaRGBWSensor/RGBWSensor.ino"
+# 9 "/Users/jack/src/dis-git/iotsaRGBWSensor/RGBWSensor.ino"
 #include <Arduino.h>
 #include "iotsa.h"
 #include "iotsaWifi.h"
 
-// CHANGE: Add application includes and declarations here
 
-#undef WITH_USER   // Enable username/password authentication for changing configurations
-#undef WITH_NTP    // Use network time protocol to synchronize the clock.
-#define WITH_OTA    // Enable Over The Air updates from ArduinoIDE. Needs at least 1MB flash.
-#undef WITH_FILES  // Enable static files webserver
-#undef WITH_FILESUPLOAD  // Enable upload of static files for webserver
-#undef WITH_FILESBACKUP  // Enable backup of all files including config files and webserver files
-#define WITH_BATTERY // Enable power-saving support
+
+#undef WITH_USER
+#undef WITH_NTP
+#define WITH_OTA 
+#undef WITH_FILES
+#undef WITH_FILESUPLOAD
+#undef WITH_FILESBACKUP
+#define WITH_BATTERY 
 
 IotsaApplication application("Iotsa RGBWSensor Server");
 IotsaWifiMod wifiMod(application);
@@ -31,10 +27,10 @@ IotsaOtaMod otaMod(application, authProvider);
 #endif
 
 #ifdef WITH_BATTERY
-#define PIN_DISABLE_SLEEP 0 // Define for pin on which low signal disables sleep
+#define PIN_DISABLE_SLEEP 0
 #include "iotsaBattery.h"
 IotsaBatteryMod batteryMod(application, authProvider);
-// Pressing the disable-sleep button will also wake from sleep or hibernation
+
 #include "iotsaInput.h"
 Button buttonWake(PIN_DISABLE_SLEEP, true, false, true);
 Input *inputs[] = {
@@ -50,9 +46,10 @@ IotsaRGBWSensorMod rgbwMod(application, authProvider);
 #ifdef IOTSA_WITH_BLE
 IotsaBLEServerMod bleserverMod(application);
 #endif
-//
-// Keep track of button presses, so we can switch mode or reboot with quick presses.
-//
+bool button0Pressed();
+void setup(void);
+void loop(void);
+#line 56 "/Users/jack/src/dis-git/iotsaRGBWSensor/RGBWSensor.ino"
 bool button0Pressed() {
   const int TAP_COUNT_MODE_CHANGE=3;
   const int TAP_COUNT_REBOOT=6;
@@ -64,7 +61,7 @@ bool button0Pressed() {
   static int buttonTapCount = 0;
   uint32_t now = millis();
   if (lastButtonTapMillis > 0 && now < lastButtonTapMillis + TAP_DURATION) {
-    // A button change that was quick enough for a tap
+
     lastButtonTapMillis = now;
     buttonTapCount++;
     if (buttonTapCount == TAP_COUNT_MODE_CHANGE) {
@@ -76,7 +73,7 @@ bool button0Pressed() {
       iotsaConfig.requestReboot(1000);
     }
   } else {
-    // Either the first change, or too late. Reset.
+
     lastButtonTapMillis = millis();
     buttonTapCount = 0;
   }
@@ -91,8 +88,7 @@ void setup(void){
 #endif
 buttonWake.setCallback(button0Pressed);
 }
- 
+
 void loop(void){
   application.loop();
 }
-

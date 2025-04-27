@@ -1,5 +1,5 @@
-#ifndef _IOTSARGBWSENSOR_H_
-#define _IOTSARGBWSENSOR_H_
+#ifndef _IOTSARGBWSENSORMOD_H_
+#define _IOTSARGBWSENSORMOD_H_
 #include "iotsa.h"
 #include "iotsaApi.h"
 

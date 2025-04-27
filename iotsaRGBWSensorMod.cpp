@@ -1,5 +1,5 @@
 #include "iotsa.h"
-#include "iotsaRGBWSensor.h"
+#include "iotsaRGBWSensorMod.h"
 #include "iotsaConfigFile.h"
 #include "Wire.h"
 #include "veml6040.h"
