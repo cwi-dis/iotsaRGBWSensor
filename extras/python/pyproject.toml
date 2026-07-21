@@ -17,5 +17,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/dis-git/iotsaRGBWSensor"
-"Bug Tracker" = "https://github.com/dis-git/iotsaRGBWSensor/issues"
+"Homepage" = "https://github.com/cwi-dis/iotsaRGBWSensor"
+"Bug Tracker" = "https://github.com/cwi-dis/iotsaRGBWSensor/issues"

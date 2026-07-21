@@ -5,5 +5,5 @@ python3 -m venv .venv
 set -x
 pip install ../../jack-git/bleak
 pip install ../iotsa/extras/python
-pip install -r ./python/requirements.txt
-pip install -e ./python
+pip install -r ./extras/python/requirements.txt
+pip install -e ./extras/python
