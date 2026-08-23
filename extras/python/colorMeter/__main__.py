@@ -4,7 +4,7 @@ import argparse
 from .color_sensor import ColorSensor
 
 def main():
-    parser = argparse.ArgumentParser(description="Get data from iotsaRGBWSenspr")
+    parser = argparse.ArgumentParser(description="Get data from iotsaRGBWSensor")
     parser.add_argument("-d", "--device", action="store", metavar="HOST", help="Hostname or IP to get data from")
     parser.add_argument("-D", "--devarg", nargs="*", default=[], metavar="NAME=VALUE", help="iotsa arguments")
     parser.add_argument("-g", "--graph", action="store_true", help="Graph data")

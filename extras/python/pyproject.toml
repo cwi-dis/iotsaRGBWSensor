@@ -15,6 +15,14 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "iotsa",
+    "matplotlib",
+    "colour-science[plotting]",
+]
+
+[project.scripts]
+colorMeter = "colorMeter.__main__:main"
 
 [project.urls]
 "Homepage" = "https://github.com/cwi-dis/iotsaRGBWSensor"

@@ -66,3 +66,51 @@ Point the sensor at whatever light (or lit surface) you want to measure.
 Read the results with a browser to <http://colorsensor.local/rgbw> in human-readable form, or <http://colorsensor.local/api/rgbw> as JSON (REST interface).
 
 You can reflash the board over the air, see [iotsa](https://github.com/cwi-dis/iotsa) for details. Tapping the button 3 times will enable OTA mode or config mode (after being requested over the net), tapping it 6 times will force a reboot.
+
+## Python tool
+
+The `extras/python/` directory contains the `colorMeter` Python tool for retrieving, storing, and graphing readings from the device.
+
+### Setup
+
+(If instructions in this repo's parent directory cover venv setup, those take precedence over the steps below.)
+
+From the repo root:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ../iotsa/extras/python/
+pip install -e extras/python/
+```
+
+Or, if you have the `requirements_dev.txt`:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r extras/python/requirements_dev.txt
+pip install -e extras/python/
+```
+
+### Usage
+
+Retrieve current data from a device and print it:
+
+```sh
+colorMeter -d colorsensor.local
+```
+
+Save readings to a CSV file (repeat to append more readings over time):
+
+```sh
+colorMeter -d colorsensor.local -o readings.csv
+```
+
+Read back a CSV file and plot the CCT (color temperature) reading on the CIE 1931 chromaticity diagram:
+
+```sh
+colorMeter -i readings.csv -g
+```
+
+This device is also used by [lissabon](https://github.com/cwi-dis/lissabon)'s `lissabonCalibrate` package to calibrate RGBW ledstrips (it talks to the device's `rgbw` API directly rather than through this tool). `colorMeter` is deliberately kept simpler and free of any lissabon-specific logic, so it stays useful as a general-purpose way to read this sensor — that was already the intent when it was split off in 2021.

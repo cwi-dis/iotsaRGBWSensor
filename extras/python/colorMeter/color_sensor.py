@@ -1,9 +1,8 @@
 import csv
 import iotsa
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot
 import colour
 import colour.plotting
-import matplotlib.pyplot
 
 
 class ColorSensor:
@@ -52,10 +51,3 @@ class ColorSensor:
         matplotlib.pyplot.plot([x_py], [y_py], '*', label="Python-converted", color="black")
         ax.legend()
         matplotlib.pyplot.show()
-        return
-        pd = pandas.DataFrame(self.data)
-        pd.v = pandas.to_numeric(pd.v)
-        pd.ts = pandas.to_numeric(pd.ts)
-        pd.t = pandas.to_datetime(pd.t)
-        pd.plot(x='t', y='v')
-        pyplot.show()
