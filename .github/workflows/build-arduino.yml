@@ -24,7 +24,7 @@ jobs:
       matrix:
         arduino-board-fqbn:
         - esp32:esp32:lolin32-lite
-      
+
     steps:
     - name: Set iotsa_ref in environment
       run: |
@@ -66,5 +66,8 @@ jobs:
 
     - name: Build for ${{ matrix.arduino-board-fqbn }}
       run: |
-        arduino-cli compile --fqbn ${{ matrix.arduino-board-fqbn }}
+        # PartitionScheme=min_spiffs: the BLE image overflows the default 1.2MB
+        # app slot. This is the Arduino equivalent of board_build.partitions in
+        # platformio.ini; Arduino-IDE-from-clone users pick it from Tools menu.
+        arduino-cli compile --fqbn ${{ matrix.arduino-board-fqbn }} --board-options PartitionScheme=min_spiffs
   

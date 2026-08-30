@@ -50,7 +50,11 @@ The `extras` folder contains the `.stl` files to print the box and the lid, and 
 
 ## Software installation
 
-- Build using Platformio. 
+- Build using PlatformIO (`pio run`), or the Arduino IDE / `arduino-cli`.
+  - The `build_opt.h` file passes `-DIOTSA_WITH_BLE` to the Arduino build (PlatformIO
+    gets it from `platformio.ini`). Don't remove it.
+  - In the Arduino IDE, set **Tools → Partition Scheme → Minimal SPIFFS** — the
+    BLE firmware does not fit the default partition.
 - Flash to the board over USB.
 - Board will create a WiFi hotspot `config-xxxxxxx`.
 - Connect to that WiFi, browse to <http://192.168.4.1>, configure hostname (lets say `colorsensor` for this example), WiFi SSID and Password. You may have to reset the board to switch to configuration mode, it will tell you.

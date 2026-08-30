@@ -6,6 +6,8 @@
 
 VEML6040 sensor;
 
+// VEML6040 I2C pins. App-only, single consumer -- no need for build_opt.h /
+// build_flags; override at build time if a board wires it differently.
 #ifndef IOTSA_VEML_SDA
 #define IOTSA_VEML_SDA 19
 #endif
