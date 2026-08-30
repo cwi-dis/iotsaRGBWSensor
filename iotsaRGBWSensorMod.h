@@ -3,17 +3,11 @@
 #include "iotsa.h"
 #include "iotsaApi.h"
 
-#ifdef IOTSA_WITH_API
-#define IotsaRGBWSensorModBaseMod IotsaApiMod
-#else
-#define IotsaRGBWSensorModBaseMod IotsaMod
-#endif
-
-class IotsaRGBWSensorMod : public IotsaRGBWSensorModBaseMod {
+class IotsaRGBWSensorMod : public IotsaModule {
 public:
-  using IotsaRGBWSensorModBaseMod::IotsaRGBWSensorModBaseMod;
+  using IotsaModule::IotsaModule;
   void setup() override;
-  void serverSetup() override;
+  void lateSetup() override;
   void loop() override;
   String info() override;
   void configLoad() override;
@@ -21,7 +15,7 @@ public:
 protected:
   bool getHandler(const char *path, JsonObject& reply) override;
   bool putHandler(const char *path, const JsonVariant& request, JsonObject& reply) override;
-  void handler();
+  void webHandler() override;
   void _measure();
   void _setInterval();
   bool error;

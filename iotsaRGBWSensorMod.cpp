@@ -25,17 +25,16 @@ void IotsaRGBWSensorMod::configSave() {
   _setInterval();
 }
 
-#ifdef IOTSA_WITH_WEB
 void
-IotsaRGBWSensorMod::handler() {
+IotsaRGBWSensorMod::webHandler() {
   iotsaConfig.extendCurrentMode();
   bool anyChanged = false;
-  if( server->hasArg("integrationInterval")) {
+  if( api.webService->server->hasArg("integrationInterval")) {
     if (needsAuthentication()) return;
-    String sInterval = server->arg("integrationInterval");
+    String sInterval = api.webService->server->arg("integrationInterval");
     integrationInterval = sInterval.toInt();
     anyChanged = true;
-  }  
+  }
   if (anyChanged) configSave();
   String message = "<html><head><title>RGBW sensor module</title></head><body><h1>RGBW sensor module</h1>";
   _measure();
@@ -73,7 +72,7 @@ IotsaRGBWSensorMod::handler() {
   message += "Color temperature: CCT=" + String(cct) + "<br>";
   message += "Ambient light level: " + String(lux) + "lux<br>";
   message += "(Integration interval: "+ String(integrationInterval) + "ms)";
-  server->send(200, "text/html", message);
+  api.webService->server->send(200, "text/html", message);
 }
 
 String IotsaRGBWSensorMod::info() {
@@ -81,7 +80,6 @@ String IotsaRGBWSensorMod::info() {
   String message = "<p>Built with RGBW sensor module. See <a href=\"/rgbw\">/rgbw</a>, or <a href=\"/api/rgbw\">/api/rgbw</a> for REST API.</p>";
   return message;
 }
-#endif // IOTSA_WITH_WEB
 
 void IotsaRGBWSensorMod::setup() {
   Wire.begin(IOTSA_VEML_SDA, IOTSA_VEML_SCL);
@@ -125,7 +123,6 @@ void IotsaRGBWSensorMod::_setInterval() {
   oldIntegrationInterval = integrationInterval;
 }
 
-#ifdef IOTSA_WITH_API
 bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
   iotsaConfig.extendCurrentMode();
   _measure();
@@ -157,16 +154,10 @@ bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request
   if (anyChanged) configSave();
   return anyChanged;
 }
-#endif // IOTSA_WITH_API
 
-void IotsaRGBWSensorMod::serverSetup() {
-#ifdef IOTSA_WITH_WEB
-  server->on("/rgbw", std::bind(&IotsaRGBWSensorMod::handler, this));
-#endif
-#ifdef IOTSA_WITH_API
-  api.setup("/api/rgbw", true, true);
+void IotsaRGBWSensorMod::lateSetup() {
   name = "rgbw";
-#endif
+  api.setup("rgbw", true, true);
 }
 
 void IotsaRGBWSensorMod::_measure() {

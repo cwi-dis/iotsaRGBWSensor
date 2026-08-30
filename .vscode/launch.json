@@ -31,8 +31,8 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "/Users/jack/src/iotsa-group/iotsaRGBWSensor/.pio/build/lolin32/firmware.elf",
-            "projectEnvName": "lolin32",
+            "executable": "/Users/jack/src/iotsa-group/iotsaRGBWSensor/.pio/build/lolin32_lite/firmware.elf",
+            "projectEnvName": "lolin32_lite",
             "toolchainBinDir": "/Users/jack/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
@@ -44,8 +44,8 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "/Users/jack/src/iotsa-group/iotsaRGBWSensor/.pio/build/lolin32/firmware.elf",
-            "projectEnvName": "lolin32",
+            "executable": "/Users/jack/src/iotsa-group/iotsaRGBWSensor/.pio/build/lolin32_lite/firmware.elf",
+            "projectEnvName": "lolin32_lite",
             "toolchainBinDir": "/Users/jack/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin",
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -53,8 +53,8 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "/Users/jack/src/iotsa-group/iotsaRGBWSensor/.pio/build/lolin32/firmware.elf",
-            "projectEnvName": "lolin32",
+            "executable": "/Users/jack/src/iotsa-group/iotsaRGBWSensor/.pio/build/lolin32_lite/firmware.elf",
+            "projectEnvName": "lolin32_lite",
             "toolchainBinDir": "/Users/jack/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "loadMode": "manual"
