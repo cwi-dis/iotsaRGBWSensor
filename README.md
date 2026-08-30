@@ -55,6 +55,11 @@ The `extras` folder contains the `.stl` files to print the box and the lid, and 
     gets it from `platformio.ini`). Don't remove it.
   - In the Arduino IDE, set **Tools → Partition Scheme → Minimal SPIFFS** — the
     BLE firmware does not fit the default partition.
+  - Install the required libraries: `VEML6040`, plus everything in iotsa's
+    `library.properties` `depends=` (`Adafruit NeoPixel`, `ArduinoJson`,
+    `cmArduinoJWT`, `CoAP simple library`, `Ds1302`, `ESP32Encoder`,
+    `NimBLE-Arduino`, `esp32_idf5_https_server_compat`). PlatformIO resolves
+    these automatically; the Arduino IDE does not when iotsa is a local checkout.
 - Flash to the board over USB.
 - Board will create a WiFi hotspot `config-xxxxxxx`.
 - Connect to that WiFi, browse to <http://192.168.4.1>, configure hostname (lets say `colorsensor` for this example), WiFi SSID and Password. You may have to reset the board to switch to configuration mode, it will tell you.
