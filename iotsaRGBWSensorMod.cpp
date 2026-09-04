@@ -29,7 +29,7 @@ void IotsaRGBWSensorMod::configSave() {
 
 void
 IotsaRGBWSensorMod::webHandler() {
-  iotsaConfig.extendCurrentMode();
+  iotsaController.extendCurrentMode();
   bool anyChanged = false;
   if( api.webService->server->hasArg("integrationInterval")) {
     if (needsAuthentication()) return;
@@ -78,7 +78,7 @@ IotsaRGBWSensorMod::webHandler() {
 }
 
 String IotsaRGBWSensorMod::info() {
-  iotsaConfig.extendCurrentMode();
+  iotsaController.extendCurrentMode();
   String message = "<p>Built with RGBW sensor module. See <a href=\"/rgbw\">/rgbw</a>, or <a href=\"/api/rgbw\">/api/rgbw</a> for REST API.</p>";
   return message;
 }
@@ -126,7 +126,7 @@ void IotsaRGBWSensorMod::_setInterval() {
 }
 
 bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
-  iotsaConfig.extendCurrentMode();
+  iotsaController.extendCurrentMode();
   _measure();
   if (error) {
     reply["error"] = "no sensor";
@@ -147,7 +147,7 @@ bool IotsaRGBWSensorMod::getHandler(const char *path, JsonObject& reply) {
 }
 
 bool IotsaRGBWSensorMod::putHandler(const char *path, const JsonVariant& request, JsonObject& reply) {
-  iotsaConfig.extendCurrentMode();
+  iotsaController.extendCurrentMode();
   bool anyChanged = false;
   JsonObject reqObj = request.as<JsonObject>();
   if (getFromRequest<int>(reqObj, "integrationInterval", integrationInterval)) {

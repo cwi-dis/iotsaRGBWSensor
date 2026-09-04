@@ -42,7 +42,7 @@ bool button0Pressed() {
   const uint32_t TAP_DURATION=1000;
 
   IFDEBUG IotsaSerial.println("button0 pressed");
-  iotsaConfig.extendCurrentMode();
+  iotsaController.extendCurrentMode();
   static uint32_t lastButtonTapMillis = 0;
   static int buttonTapCount = 0;
   uint32_t now = millis();
@@ -52,11 +52,11 @@ bool button0Pressed() {
     buttonTapCount++;
     if (buttonTapCount == TAP_COUNT_MODE_CHANGE) {
       IFDEBUG IotsaSerial.println("tap mode change");
-      iotsaConfig.allowRequestedConfigurationMode();
+      iotsaController.allowRequestedConfigurationMode();
     }
     if (buttonTapCount == TAP_COUNT_REBOOT) {
       IFDEBUG IotsaSerial.println("tap mode reboot");
-      iotsaConfig.requestReboot(1000);
+      iotsaController.requestReboot(1000);
     }
   } else {
     // Either the first change, or too late. Reset.
