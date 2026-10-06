@@ -6,11 +6,8 @@
 
 #include <Arduino.h>
 #include "iotsa.h"
-#include "iotsaWifi.h"
-#include "iotsaOta.h"
 #include "iotsaBattery.h"
 #include "iotsaInput.h"
-#include "iotsaBLEServer.h"
 #include "iotsaRGBWSensorMod.h"
 
 // Low signal on this pin disables deep sleep; it is also the config-mode
@@ -18,9 +15,6 @@
 #define PIN_DISABLE_SLEEP 0
 
 IotsaApplication application("Iotsa RGBWSensor Server");
-
-IotsaWifiMod wifiMod(application);
-IotsaOtaMod otaMod(application);
 IotsaBatteryMod batteryMod(application);
 
 Button buttonWake(PIN_DISABLE_SLEEP, true, false, true);
@@ -30,8 +24,6 @@ Input *inputs[] = {
 IotsaInputMod inputMod(application, inputs, 1);
 
 IotsaRGBWSensorMod rgbwMod(application);
-
-IotsaBLEServerMod bleserverMod(application);
 
 //
 // Keep track of button presses, so we can switch mode or reboot with quick presses.
